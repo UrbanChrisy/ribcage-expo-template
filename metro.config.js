@@ -18,6 +18,15 @@ const withCustomConfig = (config) => {
         // Add custom aliases here
       },
     },
+    server: {
+      ...config.server,
+      // enhanceMiddleware: (middleware) => {
+      //   return (arg0, arg1, arg2, arg3, arg4) => {
+      //     console.log("middleware", arg0, arg1, arg2, arg3, arg4);
+      //     return middleware(arg0, arg1, arg2, arg3, arg4);
+      //   };
+      // },
+    },
     transformer: {
       ...config.transformer,
       // Add custom transformer options here
