@@ -4,8 +4,8 @@ import { Text, View } from "react-native";
 export default function Page() {
   return (
     <View className="flex-1 items-center justify-center bg-black">
-      <Link href="/about">
-        <Text className="text-white">Go to about</Text>
+      <Link href="/">
+        <Text className="text-white">Go back home</Text>
       </Link>
     </View>
   );
