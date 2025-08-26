@@ -1,0 +1,16 @@
+{
+  "name": "Untitled",
+  "routes_directory": "./src/app/routes",
+  "port": 8081,
+  "aliases": {
+    "core": "@/core",
+    "modules": "@/modules",
+    "lib": "@/lib",
+    "components": "@/components",
+    "hooks": "@/hooks",
+    "utils": "@/utils",
+    "types": "@/types",
+    "assets": "@/assets",
+    "styles": "@/styles"
+  }
+}
