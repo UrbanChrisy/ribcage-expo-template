@@ -1,4 +1,4 @@
-import { RibcageSDK } from "@/ribcage-react-native";
+import { RibcageSDK } from "modules/ribcage-react-native";
 
 
 

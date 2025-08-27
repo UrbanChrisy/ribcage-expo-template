@@ -1,76 +1,128 @@
-import { Button } from "@/components/ui/button";
-import { core } from "@/core";
-import { useState } from "react";
-import { Text } from "react-native";
-import { PerformanceMonitor } from "react-native-reanimated";
+import { useEffect, useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { RibcageSDK } from "modules/ribcage-react-native";
+import { ScrollView } from "react-native";
+import PerformanceTest from "modules/expo-ribcage/test-performance";
 
 export default function Test() {
-  const [memoryHogs, setMemoryHogs] = useState<Array<any>>([]);
+  const [sdk] = useState(() => new RibcageSDK());
+  const [isConnected, setIsConnected] = useState(false);
+  const [isReconnecting, setIsReconnecting] = useState(false);
+  const [isPerformanceMonitoring, setIsPerformanceMonitoring] = useState(false);
 
-  const stressTest = () => {
-    // Create frame drops by blocking the main thread
-    const startTime = Date.now();
-    let count = 0;
+  useEffect(() => {
+    sdk.debugger.websocket.onConnected(() => {
+      setIsReconnecting(false);
+      setIsConnected(true);
+    });
 
-    // CPU intensive operation to cause frame drops
-    while (Date.now() - startTime < 500) { // Block for 500ms
-      count += Math.random() * Math.sqrt(count + 1);
-    }
+    sdk.debugger.websocket.onDisconnected(() => {
+      setIsReconnecting(false);
+      setIsConnected(false);
+    });
 
-    // Create memory pressure by allocating large arrays
-    const newMemoryHogs = [];
-    for (let i = 0; i < 10; i++) {
-      // Create large arrays to increase RAM usage
-      const largeArray = new Array(10000).fill(0).map((_, index) => ({
-        id: index,
-        data: new Array(100).fill(Math.random()),
-        timestamp: Date.now(),
-        randomString: Math.random().toString(36).repeat(100)
-      }));
-      newMemoryHogs.push(largeArray);
-    }
+    sdk.debugger.websocket.onReconnecting(() => {
+      setIsReconnecting(true);
+    });
 
-    setMemoryHogs(prev => [...prev, ...newMemoryHogs]);
-    console.log(`Stress test completed. Memory hogs count: ${memoryHogs.length + newMemoryHogs.length}`);
-  };
+    sdk.debugger.websocket.onMessage((message) => {
+      // console.log('message', message);
+    });
 
-  const clearMemory = () => {
-    setMemoryHogs([]);
-    console.log('Memory cleared');
-  };
+    sdk.debugger.websocket.onError((error) => {
+      console.log('error', error);
+    });
+
+    sdk.init();
+
+    return () => {
+      sdk.debugger.shutdown();
+    };
+  }, [sdk]);
 
   return (
-    <>
-      <PerformanceMonitor />
-      <Text>Test</Text>
-      <Button onPress={() => {
-        core.debugger.inspector.getLayout().then((layout) => {
-          console.log(layout);
-        });
-      }}>
-        <Text>
-          Get Layout
-        </Text>
-      </Button>
-      <Button onPress={() => {
-        core.debugger.performance.monitor.startMonitoring((metrics) => {
-          console.log(metrics);
-        });
-      }}>
-        <Text>Start Monitoring</Text>
-      </Button>
-      <Button onPress={() => {
-        core.debugger.performance.monitor.stopMonitoring();
-      }}>
-        <Text>Stop Monitoring</Text>
-      </Button>
-      <Button onPress={stressTest}>
-        <Text>Stress Test (Drop Frames + RAM)</Text>
-      </Button>
-      <Button onPress={clearMemory}>
-        <Text>Clear Memory</Text>
-      </Button>
-      <Text>Memory objects: {memoryHogs.length}</Text>
-    </>
+    <ScrollView style={styles.container}>
+      <View style={styles.debugStatusContainer}>
+        <Text style={styles.title}>Ribcage Debug Status</Text>
+
+        <View style={styles.statusContainer}>
+          <Text style={styles.label}>WebSocket Connection:</Text>
+          <View style={[styles.indicator, isConnected ? styles.connected : styles.disconnected]} />
+          <Text style={[styles.status, isConnected ? styles.connectedText : styles.disconnectedText]}>
+            {isReconnecting ? "reconnecting" : isConnected ? "connected" : "disconnected"}
+          </Text>
+        </View>
+
+        <View style={styles.statusContainer}>
+          <Text style={styles.label}>Performance Monitoring:</Text>
+          <View style={[styles.indicator, isPerformanceMonitoring ? styles.connected : styles.disconnected]} />
+          <Text style={[styles.status, isPerformanceMonitoring ? styles.connectedText : styles.disconnectedText]}>
+            {isPerformanceMonitoring ? "active" : "inactive"}
+          </Text>
+        </View>
+      </View>
+      <PerformanceTest />
+    </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  debugStatusContainer: {
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    textAlign: 'center',
+    color: '#333',
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
+    flex: 1,
+    color: '#333',
+  },
+  indicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 10,
+  },
+  connected: {
+    backgroundColor: '#4CAF50',
+  },
+  disconnected: {
+    backgroundColor: '#f44336',
+  },
+  status: {
+    fontSize: 14,
+    fontWeight: '500',
+    minWidth: 80,
+    textAlign: 'right',
+  },
+  connectedText: {
+    color: '#4CAF50',
+  },
+  disconnectedText: {
+    color: '#f44336',
+  },
+});

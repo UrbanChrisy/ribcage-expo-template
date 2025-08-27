@@ -15,14 +15,15 @@ const withCustomConfig = (config) => {
       ...config.resolver,
       // Add custom resolver options here
       alias: {
+        // '@ribcage/websocket': path.resolve(__dirname, '../ribcage/packages/websocket'),
         ...config.resolver?.alias,
         // Add custom aliases here
       },
     },
     watchFolders: [
+      // path.resolve(__dirname, '../ribcage/packages/websocket/'),
       ...config.watchFolders || [],
       // Watch external packages directory
-      // path.resolve(__dirname, '../ribcage/packages/websocket/'),
     ],
     transformer: {
       ...config.transformer,

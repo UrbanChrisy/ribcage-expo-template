@@ -11,7 +11,9 @@
 		"eas": "dotenv -e .env eas",
 		"build:dev": "bun run eas workflow:run create-development-builds.yml",
 		"build:prod": "bun run eas workflow:run create-production-builds.yml",
-		"deploy:prod": "bun run eas workflow:run deploy-to-production.yml"
+		"deploy:prod": "bun run eas workflow:run deploy-to-production.yml",
+		"copy-websocket": "rm -rf modules/ribcage-react-native/src/clients/websocket && cp -r ../ribcage/packages/websocket modules/ribcage-react-native/src/clients/websocket",
+		"postinstall": "bun run copy-websocket"
 	},
 	"dependencies": {
 		"@expo/vector-icons": "^14.1.0",
@@ -36,7 +38,8 @@
 		"react-native-safe-area-context": "5.4.0",
 		"react-native-screens": "~4.11.1",
 		"tailwind-merge": "^3.3.1",
-		"tailwindcss": "^3.4.17"
+		"tailwindcss": "^3.4.17",
+		"zod": "^4.1.3"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.20.0",
