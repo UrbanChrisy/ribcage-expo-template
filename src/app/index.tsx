@@ -1,5 +1,16 @@
-import { Text } from "react-native";
+//// [IMPORTS] ////
+import React from 'react';
+import { View } from 'react-native';
+//// [END_IMPORTS] ////
 
-export default function App() {
-  return <Text>Hello World</Text>;
+//// [COMPONENT] {"name":"IndexScreen","type":"functional"} ////
+export default function IndexScreen() {
+
+//// [RENDER] ////
+  return (
+    <View />
+  );
+//// [END_RENDER] ////
+
 }
+//// [END_COMPONENT] ////

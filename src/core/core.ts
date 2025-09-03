@@ -45,11 +45,7 @@ export class Core {
 			this.logging,
 		);
 		this.analytics = new AnalyticsClient(this.auth, this.env, this.logging);
-		this.notifications = new NotificationsClient(
-			this.auth,
-			this.api,
-			this.logging,
-		);
+		this.notifications = new NotificationsClient(this.auth, this.logging);
 		this.logger.debug("Core setup complete");
 	}
 }
