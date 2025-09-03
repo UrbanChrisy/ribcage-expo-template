@@ -5,6 +5,7 @@ import { TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { core } from '@/core';
 
+/** Button styling variants with class variance authority */
 const buttonVariants = cva(
   'group flex items-center flex-row gap-2',
   {
@@ -40,6 +41,7 @@ const buttonVariants = cva(
   }
 );
 
+/** Text styling variants for button content */
 const buttonTextVariants = cva(
   'text-base font-jakarta-bold text-foreground',
   {
@@ -68,6 +70,7 @@ const buttonTextVariants = cva(
   }
 );
 
+/** Icon styling variants for button icons */
 export const iconVariants = cva('', {
   variants: {
     variant: {
@@ -93,6 +96,7 @@ export const iconVariants = cva('', {
   },
 });
 
+/** Get icon size based on button size variant */
 const getIconSize = (buttonSize: ButtonProps['size']): number => {
   switch (buttonSize) {
     case 'sm':
@@ -104,12 +108,14 @@ const getIconSize = (buttonSize: ButtonProps['size']): number => {
   }
 };
 
+/** Props for button adornment components */
 interface AdornmentProps {
   children: React.ReactNode;
   variant?: VariantProps<typeof buttonVariants>['variant'];
   size?: VariantProps<typeof buttonVariants>['size'];
 }
 
+/** Start adornment wrapper for button icons */
 const StartAdornment = React.memo(({ children, variant, size }: AdornmentProps) => {
   const child = React.Children.only(children);
   const iconClassName = iconVariants({ variant, size });
@@ -128,6 +134,7 @@ const StartAdornment = React.memo(({ children, variant, size }: AdornmentProps) 
   );
 });
 
+/** End adornment wrapper for button icons */
 const EndAdornment = React.memo(({ children, variant, size }: AdornmentProps) => {
   const child = React.Children.only(children);
   const iconClassName = iconVariants({ variant, size });
@@ -146,15 +153,30 @@ const EndAdornment = React.memo(({ children, variant, size }: AdornmentProps) =>
   );
 });
 
+/** Props for Button component */
 type ButtonProps = React.ComponentProps<typeof Pressable> &
   VariantProps<typeof buttonVariants> & {
+    /** Icon or element to show at start of button */
     start?: React.ReactNode;
+    /** Icon or element to show at end of button */
     end?: React.ReactNode;
+    /** Button content */
     children?: React.ReactNode;
+    /** Show loading state with spinner */
     isLoading?: boolean;
+    /** Content alignment */
     align?: 'left' | 'center' | 'right';
   };
 
+/**
+ * Interactive button component with variants, loading states, and adornments
+ * @param variant - Visual style variant
+ * @param size - Button size variant
+ * @param start - Leading icon or element
+ * @param end - Trailing icon or element
+ * @param isLoading - Show loading spinner
+ * @param align - Content alignment
+ */
 function Button(props: ButtonProps) {
 
   const { ref, className, variant, size, start, end, children, isLoading = false, align = 'center', ...otherProps } = props;

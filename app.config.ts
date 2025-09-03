@@ -29,7 +29,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	web: {
 		favicon: "./src/assets/images/favicon.png",
 	},
-	plugins: ["expo-router"],
+	plugins: [
+		"expo-router",
+		[
+      "expo-dev-client",
+      {
+        launchMode: "most-recent",
+      },
+    ],
+	],
 	experiments: {
 		typedRoutes: true,
 	},
